@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowdFund — Fuel the Next Big Idea</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+    <!-- ================================================================
+         STYLESHEET
+    ================================================================ -->
+    <style>
+        /* ---------- RESET & CSS VARIABLES ---------- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0a0a0f;
+            --surface:   #12121a;
+            --card:      #1a1a26;
+            --border:    #2a2a3a;
+            --accent:    #f0c040;
+            --accent2:   #e0508a;
+            --text:      #e8e8f0;
+            --muted:     #7070a0;
+            --green:     #40d090;
+            --red:       #f05060;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            --radius:    10px;
+            --shadow:    0 4px 32px rgba(0,0,0,0.5);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Subtle noise grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* ---------- NAVBAR ---------- */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10,10,15,0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .nav-logo:hover { opacity: 0.85; }
+        .nav-logo span  { color: var(--accent2); }
+
+        .nav-links { display: flex; gap: 6px; align-items: center; }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 7px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); background: var(--surface); }
+
+        .nav-btn {
+            background: var(--accent) !important;
+            color: var(--bg) !important;
+            font-weight: 700 !important;
+        }
+        .nav-btn:hover { background: #ffd060 !important; }
+
+        .nav-user {
+            font-size: 13px;
+            color: var(--muted);
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+        }
+
+        /* ---------- LAYOUT ---------- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container-sm {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 64px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---------- TYPOGRAPHY ---------- */
+        h1, h2, h3 { font-family: var(--font-head); letter-spacing: -0.5px; }
+        h1 { font-size: clamp(28px, 5vw, 46px); font-weight: 800; line-height: 1.15; }
+        h2 { font-size: 22px; font-weight: 700; }
+        h3 { font-size: 17px; font-weight: 600; }
+
+        /* ---------- BUTTONS ---------- */
+        .btn {
+            display: inline-block;
+            padding: 11px 24px;
+            border-radius: var(--radius);
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: transform 0.15s, box-shadow 0.15s, background 0.15s, opacity 0.15s;
+        }
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 24px rgba(240,192,64,0.28);
+        }
+        .btn-primary:hover { background: #ffd060; box-shadow: 0 0 36px rgba(240,192,64,0.45); }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: var(--surface); border-color: var(--muted); }
+
+        .btn-green {
+            background: var(--green);
+            color: var(--bg);
+            font-weight: 700;
+        }
+        .btn-green:hover { background: #50e0a0; }
+
+        .btn-full { width: 100%; text-align: center; padding: 13px; font-size: 15px; }
+
+        /* ---------- FLASH MESSAGES ---------- */
+        .flash-wrapper {
+            position: fixed;
+            top: 72px;
+            right: 20px;
+            z-index: 999;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .flash {
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            animation: fadeUp 0.35s ease both;
+        }
+        .flash-error   { background: rgba(240,80,96,0.15); border: 1px solid rgba(240,80,96,0.4); color: #ff9090; }
+        .flash-success { background: rgba(64,208,144,0.15); border: 1px solid rgba(64,208,144,0.4); color: #80ffcc; }
+
+        /* ---------- FORM CARD ---------- */
+        .form-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .form-title    { font-family: var(--font-head); font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+        .form-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+
+        .form-group       { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 11px 14px;
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(240,192,64,0.12);
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        .form-footer {
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 20px;
+        }
+        .form-footer a { color: var(--accent); font-weight: 600; text-decoration: none; }
+        .form-footer a:hover { text-decoration: underline; }
+
+        hr.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            text-align: center;
+            padding: 64px 0 44px;
+            animation: fadeUp 0.45s ease both;
+        }
+
+        .hero-eyebrow {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(240,192,64,0.1);
+            border: 1px solid rgba(240,192,64,0.25);
+            padding: 4px 14px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1      { margin-bottom: 14px; }
+        .hero p       { color: var(--muted); font-size: 17px; max-width: 480px; margin: 0 auto 28px; }
+
+        /* ---------- SECTION HEADER ---------- */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            animation: fadeUp 0.45s 0.06s ease both;
+        }
+
+        /* ---------- CAMPAIGN GRID ---------- */
+        .campaigns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 28px;
+        }
+
+        /* Each card fades up with a staggered delay set by JS */
+        .campaign-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: border-color 0.22s, transform 0.22s, box-shadow 0.22s, opacity 0s;
+        }
+        .campaign-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.22s, box-shadow 0.22s;
+        }
+        .campaign-card:hover {
+            border-color: rgba(240,192,64,0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+
+        .campaign-title {
+            font-family: var(--font-head);
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .campaign-desc {
+            color: var(--muted);
+            font-size: 13.5px;
+            line-height: 1.55;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ---------- PROGRESS BAR ---------- */
+        .pct-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .progress-wrap {
+            background: var(--surface);
+            border-radius: 999px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            width: 0;                          /* animated by JS */
+            transition: width 0.7s cubic-bezier(.4,0,.2,1);
+        }
+        .progress-bar.complete { background: linear-gradient(90deg, var(--green), #50e0a0); }
+
+        /* ---------- BADGES ---------- */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .badge-progress { background: rgba(240,192,64,0.12); color: var(--accent);  border: 1px solid rgba(240,192,64,0.3); }
+        .badge-complete { background: rgba(64,208,144,0.12); color: var(--green);   border: 1px solid rgba(64,208,144,0.3); }
+
+        /* ---------- STATS GRID ---------- */
+        .campaign-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .stat-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .stat-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-family: var(--font-head); font-size: 16px; font-weight: 700; margin-top: 2px; }
+        .stat-value.green  { color: var(--green); }
+        .stat-value.accent { color: var(--accent); }
+        .stat-value.muted  { color: var(--muted); }
+
+        /* ---------- DONATE ROW ---------- */
+        .donate-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .donate-row input {
+            flex: 1;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .donate-row input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(64,208,144,0.1);
+        }
+        .donate-row .btn { padding: 9px 16px; font-size: 13px; }
+
+        /* ---------- EMPTY STATE ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 72px 24px;
+            color: var(--muted);
+            animation: fadeUp 0.4s ease both;
+        }
+        .empty-state .icon  { font-size: 52px; margin-bottom: 16px; }
+        .empty-state h3     { color: var(--text); margin-bottom: 8px; }
+        .empty-state p      { font-size: 14px; margin-bottom: 24px; }
+
+        /* ---------- ANIMATIONS ---------- */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 640px) {
+            nav        { padding: 0 16px; }
+            .container { padding: 28px 16px; }
+            .form-card { padding: 24px 18px; }
+            .campaigns-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================================================================
+     NAVBAR
+================================================================ -->
+<nav>
+    <a href="{{ url_for('index') }}" class="nav-logo">Crowd<span>Fund</span></a>
+    <div class="nav-links">
+        {% if session.get('user_id') %}
+            <span class="nav-user">👤 {{ session.get('username') }}</span>
+            <a href="{{ url_for('create_campaign') }}" class="nav-btn">+ New Campaign</a>
+            <a href="{{ url_for('logout') }}">Log out</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">Log in</a>
+            <a href="{{ url_for('signup') }}" class="nav-btn">Sign up free</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- ================================================================
+     FLASH MESSAGES
+================================================================ -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-wrapper" id="flashWrapper">
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<!-- ================================================================
+     PAGE ROUTING  (controlled by the `page` variable from Flask)
+     Values: None / "signup" / "login" / "create"
+================================================================ -->
+
+<!-- ---- HOME PAGE ---- -->
+{% if not page %}
+<div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-eyebrow">✦ Community Powered Funding</div>
+        <h1>Back Ideas That<br>Change the World</h1>
+        <p>Discover inspiring campaigns and help bring bold ideas to life — one donation at a time.</p>
+        {% if session.get('user_id') %}
+            <a href="{{ url_for('create_campaign') }}" class="btn btn-primary">Launch a Campaign →</a>
+        {% else %}
+            <a href="{{ url_for('signup') }}" class="btn btn-primary">Get Started Free →</a>
+        {% endif %}
+    </div>
+
+    <!-- Section header -->
+    <div class="section-header">
+        <h2>
+            Active Campaigns
+            <span style="color:var(--muted);font-size:14px;font-weight:400;">
+                ({{ campaigns|length }} total)
+            </span>
+        </h2>
+    </div>
+
+    {% if campaigns %}
+        <div class="campaigns-grid" id="campaignGrid">
+            {% for c in campaigns %}
+            {% set pct      = [((c.raised / c.goal * 100) if c.goal > 0 else 0), 100]|min %}
+            {% set complete = c.raised >= c.goal %}
+
+            <div class="campaign-card" data-pct="{{ pct }}" data-idx="{{ loop.index0 }}">
+
+                <!-- Title + badge -->
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                    <div class="campaign-title">{{ c.title }}</div>
+                    {% if complete %}
+                        <span class="badge badge-complete">✓ Done</span>
+                    {% else %}
+                        <span class="badge badge-progress">Live</span>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <p class="campaign-desc">{{ c.description }}</p>
+
+                <!-- Progress -->
+                <div>
+                    <div class="pct-row">
+                        <span>{{ "%.0f"|format(pct) }}% funded</span>
+                        <span>by <strong style="color:var(--text);">{{ c.creator }}</strong></span>
+                    </div>
+                    <div class="progress-wrap">
+                        <div class="progress-bar {% if complete %}complete{% endif %}"
+                             data-width="{{ pct }}"></div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="campaign-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Goal</div>
+                        <div class="stat-value accent">₹{{ "%.0f"|format(c.goal) }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Raised</div>
+                        <div class="stat-value green">₹{{ "%.0f"|format(c.raised) }}</div>
+                    </div>
+                    <div class="stat-box" style="grid-column:span 2">
+                        <div class="stat-label">Still needed</div>
+                        <div class="stat-value {% if complete %}muted{% endif %}">
+                            {% if complete %}
+                                Goal reached! 🎉
+                            {% else %}
+                                ₹{{ "%.0f"|format(c.goal - c.raised) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donate form (logged-in users, active campaigns only) -->
+                {% if session.get('user_id') and not complete %}
+                <form method="POST"
+                      action="{{ url_for('donate', campaign_id=c.id) }}"
+                      onsubmit="return validateDonate(this)">
+                    <div class="donate-row">
+                        <input type="number" name="amount"
+                               placeholder="₹ Enter amount" min="1" step="1" required>
+                        <button type="submit" class="btn btn-green">Donate</button>
+                    </div>
+                </form>
+                {% elif not session.get('user_id') %}
+                <a href="{{ url_for('login') }}"
+                   class="btn btn-secondary"
+                   style="font-size:13px;padding:8px 16px;text-align:center;">
+                    Log in to donate
+                </a>
+                {% endif %}
+
+            </div><!-- /.campaign-card -->
+            {% endfor %}
+        </div><!-- /.campaigns-grid -->
+
+    {% else %}
+        <div class="empty-state">
+            <div class="icon">🚀</div>
+            <h3>No campaigns yet</h3>
+            <p>Be the first to launch a campaign and inspire others to contribute.</p>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('create_campaign') }}" class="btn btn-primary">Create First Campaign</a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn btn-primary">Sign up &amp; Start</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+</div><!-- /.container -->
+{% endif %}
+
+
+<!-- ---- SIGNUP PAGE ---- -->
+{% if page == 'signup' %}
+<div class="container-sm">
+    <div class="form-card">
+        <div class="form-title">Create Account</div>
+        <div class="form-subtitle">Join thousands of backers and creators</div>
+
+        <form method="POST" action="{{ url_for('signup') }}"
+              onsubmit="return validateSignup(this)">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="e.g. ravi_kumar"
+                       required maxlength="30" autofocus>
+            </div>
+            <div class="form-group">
+                <label>Email address</label>
+                <input type="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" id="pw"
+                       placeholder="Min. 6 characters" required minlength="6">
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" id="pw2"
+                       placeholder="Re-enter password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;">
+                Create my account →
+            </button>
+        </form>
+
+        <hr class="divider">
+        <p class="form-footer">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Log in</a>
+        </p>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- ---- LOGIN PAGE ---- -->
+{% if page == 'login' %}
+<div class="container-sm">
+    <div class="form-card">
+        <div class="form-title">Welcome back</div>
+        <div class="form-subtitle">Log in to your CrowdFund account</div>
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="Your username"
+                       required autofocus>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password"
+                       placeholder="Your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;">
+                Log in →
+            </button>
+        </form>
+
+        <hr class="divider">
+        <p class="form-footer">
+            New here?
+            <a href="{{ url_for('signup') }}">Create a free account</a>
+        </p>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- ---- CREATE CAMPAIGN PAGE ---- -->
+{% if page == 'create' %}
+<div class="container-sm">
+    <div class="form-card">
+        <div class="form-title">Launch a Campaign</div>
+        <div class="form-subtitle">Share your idea and start raising funds today</div>
+
+        <form method="POST" action="{{ url_for('create_campaign') }}"
+              onsubmit="return validateCampaign(this)">
+            <div class="form-group">
+                <label>Campaign Title</label>
+                <input type="text" name="title"
+                       placeholder="e.g. Clean Water for Rural Schools"
+                       required maxlength="120" autofocus>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="5"
+                          placeholder="Tell people what this campaign is about, why it matters, and how funds will be used..."
+                          required maxlength="2000"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Funding Goal (₹)</label>
+                <input type="number" name="goal_amount"
+                       placeholder="e.g. 50000" min="1" step="1" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;">
+                🚀 Launch Campaign
+            </button>
+        </form>
+
+        <hr class="divider">
+        <p class="form-footer">
+            <a href="{{ url_for('index') }}" style="color:var(--muted);">← Back to campaigns</a>
+        </p>
+    </div>
+</div>
+{% endif %}
+
+
+<!-- ================================================================
+     JAVASCRIPT  — form validation + card animations
+================================================================ -->
+<script>
+    /* ---------- Auto-dismiss flash messages ---------- */
+    (function () {
+        const wrapper = document.getElementById('flashWrapper');
+        if (!wrapper) return;
+        setTimeout(() => {
+            [...wrapper.children].forEach(el => {
+                el.style.transition = 'opacity 0.4s';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 400);
+            });
+            setTimeout(() => wrapper.remove(), 900);
+        }, 3500);
+    })();
+
+    /* ---------- Staggered card entrance + progress bar animation ---------- */
+    (function () {
+        const cards = document.querySelectorAll('.campaign-card');
+        if (!cards.length) return;
+
+        cards.forEach((card, i) => {
+            // Stagger each card 60 ms apart
+            setTimeout(() => {
+                card.classList.add('visible');
+                // Animate progress bar width
+                const bar = card.querySelector('.progress-bar');
+                if (bar) {
+                    const target = bar.dataset.width || '0';
+                    // Short delay so the CSS transition fires after paint
+                    requestAnimationFrame(() => {
+                        setTimeout(() => { bar.style.width = target + '%'; }, 50);
+                    });
+                }
+            }, i * 60);
+        });
+    })();
+
+    /* ---------- Form validation: Sign Up ---------- */
+    function validateSignup(form) {
+        const pw  = form.password.value;
+        const pw2 = form.confirm_password.value;
+        if (pw.length < 6) {
+            showError('Password must be at least 6 characters.');
+            return false;
+        }
+        if (pw !== pw2) {
+            showError('Passwords do not match!');
+            return false;
+        }
+        return true;
+    }
+
+    /* ---------- Form validation: Create Campaign ---------- */
+    function validateCampaign(form) {
+        const goal = parseFloat(form.goal_amount.value);
+        if (!goal || goal <= 0) {
+            showError('Please enter a valid funding goal greater than ₹0.');
+            return false;
+        }
+        if (form.title.value.trim().length < 5) {
+            showError('Title must be at least 5 characters.');
+            return false;
+        }
+        if (form.description.value.trim().length < 20) {
+            showError('Please write a more detailed description (at least 20 characters).');
+            return false;
+        }
+        return true;
+    }
+
+    /* ---------- Form validation: Donate ---------- */
+    function validateDonate(form) {
+        const val = parseFloat(form.amount.value);
+        if (!val || val <= 0) {
+            showError('Please enter a valid donation amount greater than ₹0.');
+            return false;
+        }
+        return true;
+    }
+
+    /* ---------- Helper: show a flash-style error inline ---------- */
+    function showError(msg) {
+        // Try to re-use existing wrapper or build one above the active form
+        let wrapper = document.getElementById('flashWrapper');
+        if (!wrapper) {
+            wrapper = document.createElement('div');
+            wrapper.id = 'flashWrapper';
+            wrapper.className = 'flash-wrapper';
+            document.body.appendChild(wrapper);
+        }
+        const el = document.createElement('div');
+        el.className = 'flash flash-error';
+        el.textContent = msg;
+        wrapper.appendChild(el);
+        setTimeout(() => {
+            el.style.transition = 'opacity 0.4s';
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 400);
+        }, 3500);
+    }
+</script>
+
+</body>
+</html>
